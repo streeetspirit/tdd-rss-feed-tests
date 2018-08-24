@@ -100,7 +100,7 @@ $(function() {
         */
         let feedContents0,
             feedContents1;
-            let feed = $('.feed');
+        let feed = $('.feed');
 
          beforeEach (function (done) {
             feedContents0 = feed.html();
