@@ -58,7 +58,7 @@ $(function() {
 
         /* test that the menu element is hidden by default. */
          it('is hidden by default', function() {
-            expect(body.attr('class')).toEqual('menu-hidden');
+            expect(body.hasClass('menu-hidden')).toBe(true);
          });
 
          /* test ensures the menu changes
@@ -80,12 +80,14 @@ $(function() {
          * Here we use the first rss feed (element 0) to test things
          * loadFeed() is asynchronous so this test uses beforeEach and asynchronous done() function.
          */
+
          beforeEach (function (done) {
              loadFeed (0, done);
          });
 
          it('have at least one element after loading', function() {
-            expect($('.entry').length>0).toBe(true);
+            const feed = $('.feed .entry');
+            expect(feed.length > 0).toBe(true);
          });
     });
 
@@ -94,8 +96,8 @@ $(function() {
         /* test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          *
-         * By default feed #0 is loaded, feedContents0 keeps html generated for it
-         * after that - load different feed and save its html as well
+         * To account for asynchronisity one loadFeed funcion is nested inside of another
+         * after loading different feeds - save its html to a variable
          * compare html contents
         */
         let feedContents0,
@@ -103,11 +105,12 @@ $(function() {
         let feed = $('.feed');
 
          beforeEach (function (done) {
-            feedContents0 = feed.html();
-
             loadFeed (1, function () {
               feedContents1 = feed.html();
-              done();
+              loadFeed (0, function () {
+                feedContents0 = feed.html();
+                done();
+              });
             });
          });
 
