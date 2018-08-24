@@ -71,21 +71,48 @@ $(function() {
             menuIcon.trigger('click');
             expect(body.hasClass('menu-hidden')).toBe(true);
           });
+    });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
-
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
+    /* test suite "Initial Entries" */
+    describe('Initial Entries', function() {
+        /* test ensures when the loadFeed function is called and completes its work,
+         * there is at least a single .entry element within the .feed container.
+         * Here we use the first rss feed (element 0) to test things
+         * loadFeed() is asynchronous so this test uses beforeEach and asynchronous done() function.
          */
+         beforeEach (function (done) {
+             loadFeed (0, done);
+         });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
+         it('have at least one element after loading', function() {
+            expect($('.entry').length>0).toBe(true);
+         });
+    });
 
-        /* TODO: Write a test that ensures when a new feed is loaded
+    /*test suite "New Feed Selection" */
+    describe('New Feed Selection', function() {
+        /* test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
+         *
+         * By default feed #0 is loaded, feedContents0 keeps html generated for it
+         * after that - load different feed and save its html as well
+         * compare html contents
+        */
+        let feedContents0,
+            feedContents1;
+            let feed = $('.feed');
+
+         beforeEach (function (done) {
+            feedContents0 = feed.html();
+
+            loadFeed (1, function () {
+              feedContents1 = feed.html();
+              done();
+            });
+         });
+
+         it('is different from previously loaded feed', function() {
+            expect(feedContents0).not.toBe(feedContents1);
+         });
     });
 }());
